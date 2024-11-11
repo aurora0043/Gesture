@@ -21,13 +21,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.IntOffset
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +43,8 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     //PointerEvents()
                     Tap()
+                    Drag_Horizontal()
+                    Drag_Vertical()
                 }
             }
         }
@@ -130,4 +137,38 @@ fun Tap() {
                 }
         )
     }
+}
+
+@Composable
+fun Drag_Horizontal() {
+    var offsetX by remember { mutableStateOf(0f) }
+    Text(
+        text = "水平拖曳",
+        modifier = Modifier
+            .offset { IntOffset(offsetX.toInt(), 200) }
+            .draggable(
+                orientation= Orientation.Horizontal,
+                state = rememberDraggableState{ delta ->
+                    offsetX += delta
+                }
+            )
+    )
+}
+
+@Composable
+fun Drag_Vertical() {
+    var offsetY by remember { mutableStateOf(0f) }
+    Text(
+        text = "垂直拖曳",
+        modifier = Modifier
+            .offset { IntOffset(600, offsetY.toInt() + 100) }
+            .draggable(
+                orientation= Orientation.Vertical,
+                state = rememberDraggableState{ delta ->
+                    offsetY += delta
+                }
+            )
+
+    )
+
 }
