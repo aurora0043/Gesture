@@ -172,3 +172,13 @@ fun Drag_Vertical() {
     )
 
 }
+
+@Composable
+fun Ghost() {
+    Image(
+        painter = painterResource(id = R.drawable.ghost2),
+        contentDescription = "精靈",
+        modifier = Modifier
+            .offset { IntOffset(800, 200) }
+    )
+}
