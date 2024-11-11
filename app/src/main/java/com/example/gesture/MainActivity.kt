@@ -21,7 +21,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
@@ -67,8 +70,33 @@ fun PointerEvents() {
 fun Tap() {
     var msg by remember { mutableStateOf("TAP相關手勢實例") }
     var count by remember { mutableStateOf(0) }
+    var offset1 by remember { mutableStateOf(Offset.Zero) }
+    var offset2 by remember { mutableStateOf(Offset.Zero) }
+
     Column {
-        Text("\n" + msg+"\n計數："+count.toString())
+        Text("\n" + msg+"\n計數："+count.toString(),
+            modifier = Modifier.pointerInput(Unit){
+                detectTapGestures(
+                    onPress={count=0}
+                )
+            }
+        )
+
+        Box(modifier = Modifier.background(Color.Yellow)
+            .fillMaxWidth()
+            .pointerInput(Unit) {
+                detectDragGesturesAfterLongPress(
+                    onDrag = { change, dragAmount -> offset2+=dragAmount},
+                    onDragStart = {
+                        offset1 = it
+                        offset2 = it},
+                    onDragEnd = {msg="從" + offset1.toString() + "拖曳到" + offset2.toString()},
+                    )
+               }
+            ){
+            Text("")
+        }
+
         Image(
             painter = painterResource(id = R.drawable.pu0),
             contentDescription = "靜宜之美",
@@ -77,7 +105,7 @@ fun Tap() {
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onTap = {msg = "後觸發onTap(短按)"
-                                count++},
+                                count+=1},
                         onDoubleTap = {msg = "雙擊"
                                       count+=2},
                         onLongPress = {msg = "長按"
